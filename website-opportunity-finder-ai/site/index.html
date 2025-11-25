@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Website Opportunity Finder AI – Build Plan</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header class="hero">
+      <div class="hero__content">
+        <p class="hero__badge">Expert AI Systems Architecture</p>
+        <h1>Website Opportunity Finder AI</h1>
+        <p class="hero__subtitle">
+          End‑to‑end automation blueprint for discovering local businesses with website gaps,
+          scoring digital presence quality, and delivering actionable lead reports for agencies.
+        </p>
+        <div class="hero__cta">
+          <button class="pill" data-target="mission">Mission Brief</button>
+          <button class="pill pill--outline" data-target="roadmap">Roadmap</button>
+        </div>
+      </div>
+      <div class="hero__metrics">
+        <div class="metric">
+          <span class="metric__label">Lead Sources</span>
+          <span class="metric__value">6+</span>
+        </div>
+        <div class="metric">
+          <span class="metric__label">Automation Reach</span>
+          <span class="metric__value">15K cities</span>
+        </div>
+        <div class="metric">
+          <span class="metric__label">SLA per batch</span>
+          <span class="metric__value">&lt; 8 min</span>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section id="mission" class="card">
+        <h2>Mission Brief</h2>
+        <p>
+          Deliver an autonomous AI agent that ingests local business directories, identifies
+          companies without modern websites, and produces prioritized outreach lists with contact
+          context and website quality diagnostics. The system must be modular, auditable, and ready
+          to scale to multiple regions and verticals without manual tuning.
+        </p>
+        <div class="grid grid--3">
+          <article class="tile">
+            <h3>Primary Objectives</h3>
+            <ul>
+              <li>Capture business contact data from heterogeneous directories.</li>
+              <li>Detect website presence and score digital quality with a consistent rubric.</li>
+              <li>Output curated outreach-ready lead packs with evidence snapshots.</li>
+            </ul>
+          </article>
+          <article class="tile">
+            <h3>Secondary Objectives</h3>
+            <ul>
+              <li>Support incremental enrichment runs (daily/weekly refresh).</li>
+              <li>Provide API + dashboard surfaces for sales and marketing teams.</li>
+              <li>Enable human QA feedback loops to improve scoring heuristics.</li>
+            </ul>
+          </article>
+          <article class="tile">
+            <h3>Non‑Goals v1</h3>
+            <ul>
+              <li>Fully autonomous outreach or CRM sync.</li>
+              <li>Multi-language content analysis beyond English &amp; major Indian languages.</li>
+              <li>Predictive churn/propensity modeling (future roadmap).</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>High-Level Architecture</h2>
+        <div class="architecture">
+          <div class="architecture__layer">
+            <h3>Experience Layer</h3>
+            <p>
+              Next.js operations console (Ops Portal) + REST/GraphQL API for programmatic access.
+              Auth0 for workforce SSO, role-based permissions, and audit logging.
+            </p>
+          </div>
+          <div class="architecture__layer">
+            <h3>Orchestration Layer</h3>
+            <p>
+              Temporal or LangGraph orchestrates multi-source crawls, enrichment fan-out, quality
+              scoring, and report assembly with compensating retries &amp; task provenance.
+            </p>
+          </div>
+          <div class="architecture__layer">
+            <h3>Acquisition Layer</h3>
+            <p>
+              Headless browser microservices (Playwright) + API collectors (SerpAPI, JustDial, IndiaMART)
+              running inside containerized Workers (Fly.io / AWS Fargate) with rotating proxies.
+            </p>
+          </div>
+          <div class="architecture__layer">
+            <h3>Knowledge Layer</h3>
+            <p>
+              PostgreSQL (Supabase) for relational storage, Elasticsearch/OpenSearch for fuzzy matching,
+              S3/Blob storage for raw HTML snapshots, and Redis for caching session footprints.
+            </p>
+          </div>
+          <div class="architecture__layer">
+            <h3>Intelligence Layer</h3>
+            <p>
+              Modular scoring engine combining rule-based heuristics, Lighthouse metrics, and
+              LLM-based UX reviews (OpenAI GPT-4.1 with structured output) with guardrails via JSON Schema.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Input Contract</h2>
+        <div class="grid grid--2">
+          <div>
+            <h3>Request Payload</h3>
+            <pre><code>{
+  "city": "Pune",
+  "state": "Maharashtra",
+  "country": "India",
+  "category": "Boutique",
+  "leadTarget": 100,
+  "filters": {
+    "minRating": 3.5,
+    "maxWebsiteScore": 65,
+    "excludeChains": true
+  }
+}</code></pre>
+          </div>
+          <div>
+            <h3>Validation Rules</h3>
+            <ul>
+              <li>Location resolves to geo-coordinates via Mapbox Geocoding API.</li>
+              <li>Category normalized against NAICS/SIC taxonomy for search fan-out.</li>
+              <li>Lead target default 50; hard cap 300 per run to manage quota usage.</li>
+              <li>All parameters tracked for lineage &amp; replay logging.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Acquisition Strategy</h2>
+        <div class="timeline">
+          <div class="timeline__event">
+            <span class="timeline__dot"></span>
+            <div>
+              <h3>Google Maps &amp; Places</h3>
+              <p>Search Nearby + Text Search APIs, scraped business profiles, and reviews metadata.</p>
+              <ul>
+                <li>Resolve duplicates with place_id canonicalization.</li>
+                <li>Leverage reviews count &amp; recency as activity signal.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__event">
+            <span class="timeline__dot"></span>
+            <div>
+              <h3>JustDial &amp; IndiaMART</h3>
+              <p>HTML scraping with Playwright + custom selectors, fallback to RSS/JSON endpoints.</p>
+              <ul>
+                <li>Session rotation using Bright Data proxies and mobile UA spoofing.</li>
+                <li>Deterministic throttling (2 req/s) to avoid IP blocking.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__event">
+            <span class="timeline__dot"></span>
+            <div>
+              <h3>Facebook &amp; Instagram</h3>
+              <p>Graph API for authorized data, fallback to headless crawl for public pages.</p>
+              <ul>
+                <li>Extract contact buttons, messaging handles, and bio links.</li>
+                <li>Use NLP to classify whether social link references a primary website.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="timeline__event">
+            <span class="timeline__dot"></span>
+            <div>
+              <h3>Local Directories</h3>
+              <p>Pluggable adapters (Yelp, Sulekha, YellowPages) via common crawl contract.</p>
+              <ul>
+                <li>Adapter authoring guidelines with JSONPath-based extraction templates.</li>
+                <li>Config-driven inclusion/exclusion lists per geography.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Website Detection &amp; Scoring</h2>
+        <div class="grid grid--2">
+          <div class="tile tile--outline">
+            <h3>Detection Flow</h3>
+            <ol>
+              <li>Inspect explicit website fields from each source.</li>
+              <li>Follow social bio URLs and Google Maps website links.</li>
+              <li>Run domain guesser (companyname + tld) and verify with DNS + HTTP HEAD.</li>
+              <li>De-duplicate via PSL-normalized domain hash.</li>
+            </ol>
+          </div>
+          <div class="tile tile--outline">
+            <h3>Quality Rubric (0‑100)</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>Weight</th>
+                  <th>Signals</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Technical Health</td>
+                  <td>30%</td>
+                  <td>Lighthouse performance, HTTPS, mobile responsive checks.</td>
+                </tr>
+                <tr>
+                  <td>Content Quality</td>
+                  <td>25%</td>
+                  <td>LLM evaluation of hero messaging, services clarity, CTAs.</td>
+                </tr>
+                <tr>
+                  <td>Design &amp; UX</td>
+                  <td>20%</td>
+                  <td>Visual heuristics (contrast, spacing), load sequencing.</td>
+                </tr>
+                <tr>
+                  <td>Freshness</td>
+                  <td>15%</td>
+                  <td>Last update timestamp, blog/news recency, schema markup.</td>
+                </tr>
+                <tr>
+                  <td>Conversion Readiness</td>
+                  <td>10%</td>
+                  <td>Booking/contact flows, lead forms, map embeds, click-to-call.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <p class="note">
+          All scoring components emit structured evidence (screenshots, DOM snippets, metrics) stored
+          alongside the lead for transparent client handoff and future model training.
+        </p>
+      </section>
+
+      <section class="card">
+        <h2>Data Model Snapshots</h2>
+        <div class="grid grid--2">
+          <div>
+            <h3>Relational Core (PostgreSQL)</h3>
+            <pre><code>tables:
+  businesses:
+    - business_id UUID PK
+    - name text
+    - categories text[]
+    - location geography(Point, 4326)
+    - address jsonb
+    - phones jsonb
+    - emails jsonb
+    - source_refs jsonb
+    - enrichment_status text
+    - created_at timestamptz
+  digital_footprints:
+    - footprint_id UUID PK
+    - business_id FK
+    - website_url text
+    - status text
+    - lighthouse jsonb
+    - seo_metrics jsonb
+    - ux_score numeric
+    - last_crawled_at timestamptz
+  lead_scores:
+    - lead_id UUID PK
+    - business_id FK
+    - opportunity_label text
+    - website_score numeric
+    - priority_rank int
+    - confidence numeric
+    - report_bundle_url text
+    - generated_at timestamptz</code></pre>
+          </div>
+          <div>
+            <h3>Search Index (OpenSearch)</h3>
+            <pre><code>index: business_leads_v1
+mappings:
+  name: text, keyword
+  categories: keyword
+  city: keyword
+  has_website: boolean
+  website_score: float
+  freshness_days: integer
+  signals: nested
+  score_components: nested
+  last_seen: date</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Report Generation</h2>
+        <div class="grid grid--3">
+          <article class="tile">
+            <h3>Summary Deck</h3>
+            <p>Templated Google Slides / PitchDeck export highlighting top 20 leads with visuals.</p>
+          </article>
+          <article class="tile">
+            <h3>CSV + CRM Packet</h3>
+            <p>Downloadable CSV, HubSpot-ready CSV, and JSON API bundle for downstream automation.</p>
+          </article>
+          <article class="tile">
+            <h3>Audit Trail</h3>
+            <p>Per-lead dossier containing screenshots, metric tables, and commentary from the AI reviewer.</p>
+          </article>
+        </div>
+        <p class="note">
+          Reporting jobs run asynchronously via queue workers; completion webhooks notify Slack/Email
+          with signed URLs to results stored in S3 + short-lived CDN tokens.
+        </p>
+      </section>
+
+      <section id="roadmap" class="card">
+        <h2>Implementation Roadmap</h2>
+        <div class="roadmap">
+          <article class="roadmap__phase">
+            <header>
+              <h3>P0 · Platform Foundations (Week 1‑2)</h3>
+              <span>Deliver core infra + skeleton flows</span>
+            </header>
+            <ul>
+              <li>Stand up Supabase (Postgres + Auth), Redis, and S3 buckets.</li>
+              <li>Bootstrap Temporal cluster and baseline workers (TypeScript runtime).</li>
+              <li>Implement location/category ingestion API + request validator.</li>
+              <li>Ship Ops Portal MVP with run launcher and status dashboards.</li>
+            </ul>
+          </article>
+          <article class="roadmap__phase">
+            <header>
+              <h3>P1 · Data Acquisition (Week 3‑5)</h3>
+              <span>Multi-source discovery + dedupe</span>
+            </header>
+            <ul>
+              <li>Google Maps &amp; Places connectors with quota guardrails.</li>
+              <li>JustDial/IndiaMART Playwright scrapers with anti-bot hardening.</li>
+              <li>Entity resolution pipeline (fuzzy matching + address normalization).</li>
+              <li>Implement incremental crawl policies and delta tracking.</li>
+            </ul>
+          </article>
+          <article class="roadmap__phase">
+            <header>
+              <h3>P2 · Website Intelligence (Week 6‑8)</h3>
+              <span>Scoring engine &amp; evidence capture</span>
+            </header>
+            <ul>
+              <li>Website detection heuristics + DNS validation microservice.</li>
+              <li>Lighthouse audit service &amp; screenshot capture pipelines.</li>
+              <li>LLM evaluation prompts with function calling + guardrails.</li>
+              <li>Composite scoring model with weight tuning + calibration set.</li>
+            </ul>
+          </article>
+          <article class="roadmap__phase">
+            <header>
+              <h3>P3 · Reporting &amp; Delivery (Week 9‑10)</h3>
+              <span>Lead packaging &amp; distribution</span>
+            </header>
+            <ul>
+              <li>Report templating engine (Mustache/JSON Resume style components).</li>
+              <li>CSV/JSON exports + webhook notifications.</li>
+              <li>Ops Portal lead explorer with filters and evidence previews.</li>
+              <li>Usage analytics + cost monitoring dashboards.</li>
+            </ul>
+          </article>
+          <article class="roadmap__phase">
+            <header>
+              <h3>P4 · Optimization (Week 11+)</h3>
+              <span>Scale, QA, and expansion</span>
+            </header>
+            <ul>
+              <li>Active learning loop for low-confidence scoring cases.</li>
+              <li>Automated proxy pool scaling + rate limit predictor.</li>
+              <li>Pipeline templating for new geographies and categories.</li>
+              <li>Integration hooks for CRM / marketing automation systems.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Risk &amp; Mitigation Matrix</h2>
+        <table class="risk-table">
+          <thead>
+            <tr>
+              <th>Risk</th>
+              <th>Impact</th>
+              <th>Likelihood</th>
+              <th>Mitigations</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Source rate limits / bans</td>
+              <td>High</td>
+              <td>Medium</td>
+              <td>Proxy rotation, adaptive throttling, multi-source fallback, legal review.</td>
+            </tr>
+            <tr>
+              <td>LLM hallucinations</td>
+              <td>Medium</td>
+              <td>Medium</td>
+              <td>Schema validation, dual-model cross-check, human QA sampling.</td>
+            </tr>
+            <tr>
+              <td>Data privacy compliance</td>
+              <td>High</td>
+              <td>Low</td>
+              <td>Only use public data, honor opt-outs, maintain audit logs, align with GDPR/DPDP.</td>
+            </tr>
+            <tr>
+              <td>Infrastructure costs</td>
+              <td>Medium</td>
+              <td>Medium</td>
+              <td>Autoscale workers, per-run budgeting, spot instances for crawlers.</td>
+            </tr>
+            <tr>
+              <td>Directory schema drift</td>
+              <td>Medium</td>
+              <td>High</td>
+              <td>Schema tests, adapter contracts, monitoring of CSS selector breakage.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2>Operational Playbook</h2>
+        <div class="grid grid--3">
+          <article class="tile">
+            <h3>Monitoring</h3>
+            <ul>
+              <li>Grafana dashboards for crawl throughput, error rates, and API quotas.</li>
+              <li>PagerDuty alerts on orchestration failures &amp; SLA breaches.</li>
+              <li>LLM evaluation drift tracked via Prometheus custom metrics.</li>
+            </ul>
+          </article>
+          <article class="tile">
+            <h3>Quality Assurance</h3>
+            <ul>
+              <li>Daily random sample QA with annotation tool + disagreement capture.</li>
+              <li>Golden set verification prior to production deploys.</li>
+              <li>Automated screenshot diffing for website regressions.</li>
+            </ul>
+          </article>
+          <article class="tile">
+            <h3>Security &amp; Compliance</h3>
+            <ul>
+              <li>Secrets stored in AWS Secrets Manager + rotation policy.</li>
+              <li>Source ToS compliance review stored per connector.</li>
+              <li>PII minimization &amp; encryption at rest (AES-256 on bucket objects).</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Backlog &amp; Expansion Ideas</h2>
+        <div class="grid grid--2">
+          <div class="tile">
+            <h3>Future Enhancements</h3>
+            <ul>
+              <li>AI-generated personalized outreach drafts per lead.</li>
+              <li>Chrome extension for on-the-fly prospect context.</li>
+              <li>Partnership feeds with hosting providers / domain registrars.</li>
+              <li>Localized language support and voice-of-customer ingestion.</li>
+            </ul>
+          </div>
+          <div class="tile">
+            <h3>Technical Debt Watchlist</h3>
+            <ul>
+              <li>Playwright session pooling to reduce cold-start hit.</li>
+              <li>LLM dependency diversification (Anthropic, local LLMs).</li>
+              <li>Progressive data deletion for aged leads to control storage.</li>
+              <li>Per-tenant cost attribution for agency resellers.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p>&copy; 2025 Website Opportunity Finder AI · Autonomous systems blueprint</p>
+      <button id="backToTop" class="pill pill--outline">Back to top</button>
+    </footer>
+
+    <script src="app.js" type="module"></script>
+  </body>
+</html>
